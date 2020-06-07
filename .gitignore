@@ -1,0 +1,4 @@
+/nbproject
+/.serverless
+/secrets.*
+/node_modules/

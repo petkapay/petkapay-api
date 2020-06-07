@@ -1,0 +1,175 @@
+# Welcome to Serverless!
+#
+# Happy Coding!
+
+service: petkapayserverless
+plugins:
+  
+custom:
+  secrets: ${file(secrets.${opt:stage, self:provider.stage}.yml)}
+  stage: ${opt:stage, self:provider.stage}
+  keysTable: petkaPay-keys-${self:custom.stage}
+  paymentsTable: petkaPay-payments-${self:custom.stage}
+  paymentsProcessTable: petkaPay-payments-process-${self:custom.stage}
+  merchantTable: petkaPay-merchant-${self:custom.stage}
+  DeletionPolicy:
+    dev: Delete
+    v1: Retain
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+
+# you can overwrite defaults here
+  stage: dev
+  region: eu-central-1
+  logRetentionInDays: 7 # Set the default RetentionInDays for a CloudWatch LogGroup
+
+# you can add statements to the Lambda function's IAM Role here
+  iamRoleStatements: # permissions for all of your functions can be set here
+      - Effect: Allow
+        Action: # Gives permission to DynamoDB tables in a specific region
+          - dynamodb:DescribeTable
+          - dynamodb:Query
+          - dynamodb:Scan
+          - dynamodb:GetItem
+          - dynamodb:PutItem
+          - dynamodb:UpdateItem
+          - dynamodb:DeleteItem
+        Resource: 
+          - { "Fn::GetAtt": ["paymentsTable", "Arn" ] }
+          - { "Fn::GetAtt": ["paymentsProcessTable", "Arn" ] }
+          - { "Fn::GetAtt": ["keysTable", "Arn" ] }
+          - { "Fn::GetAtt": ["merchantTable", "Arn" ] }
+
+# you can define service wide environment variables here
+  environment:
+    STAGE: ${opt:stage, self:provider.stage}
+    BLOCKCYPHER_TOKEN: ${self:custom.secrets.BLOCKCYPHER_TOKEN}
+    AES_KEY: ${self:custom.secrets.AES_KEY}
+    keysTable: ${self:custom.keysTable}
+    paymentsTable: ${self:custom.paymentsTable}
+    paymentsProcessTable: ${self:custom.paymentsProcessTable}
+    merchantTable: ${self:custom.merchantTable}
+
+    
+  apiGateway:
+      binaryMediaTypes:
+        - '*/*'
+
+# you can add packaging information here
+package:
+#  include:
+#    - include-me.js
+#    - include-me-dir/**
+  exclude:
+    - nbproject/**
+
+functions:
+  staticFiles:
+    handler: staticFiles/lambda.handler
+    events:
+      - http:
+         path: html/paymentFrame.html
+         method: get
+      - http:
+         path: html/petkaPayLogoImageAndName3.svg
+         method: get
+      - http:
+         path: html/paymentFrame.css
+         method: get
+      - http:
+         path: html/BTC_Logo.png
+         method: get
+      - http:
+         path: html/jquery-qrcode-0.17.0.min.js
+         method: get
+      - http:
+         path: html/petkaPay.js
+         method: get
+      - http:
+         path: html/test.html
+         method: get
+      - http:
+         path: html/register.html
+         method: get
+
+  payment:
+    handler: payment/lambda.handler
+    events:
+      - http:
+          path: payment/start
+          method: post
+      - http:
+          path: payment/getDetails
+          method: get
+      - http:
+          path: payment/getStatus
+          method: get
+  paymentProcess:
+    handler: paymentProcess/lambda.handler
+    timeout: 300 
+    events:
+      - schedule: rate(10 minutes)
+      - http:
+          path: paymentProcess/processOpen
+          method: post
+  merchant:
+    handler: merchant/lambda.handler
+    events:
+      - http:
+          path: merchant/create
+          method: post
+
+# you can add CloudFormation resource templates here
+resources:
+  Resources:
+    paymentsTable:
+      Type: AWS::DynamoDB::Table
+      DeletionPolicy: ${self:custom.DeletionPolicy.${opt:stage, self:provider.stage}}
+      Properties:
+        TableName: ${self:custom.paymentsTable}
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+    keysTable:
+      Type: AWS::DynamoDB::Table
+      DeletionPolicy: ${self:custom.DeletionPolicy.${opt:stage, self:provider.stage}}
+      Properties:
+        TableName: ${self:custom.keysTable}
+        AttributeDefinitions:
+          - AttributeName: publicKey
+            AttributeType: S
+        KeySchema:
+          - AttributeName: publicKey
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+    paymentsProcessTable:
+      Type: AWS::DynamoDB::Table
+      DeletionPolicy: ${self:custom.DeletionPolicy.${opt:stage, self:provider.stage}}
+      Properties:
+        TableName: ${self:custom.paymentsProcessTable}
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+    merchantTable:
+      Type: AWS::DynamoDB::Table
+      DeletionPolicy: ${self:custom.DeletionPolicy.${opt:stage, self:provider.stage}}
+      Properties:
+        TableName: ${self:custom.merchantTable}
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+  

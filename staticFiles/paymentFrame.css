@@ -1,0 +1,186 @@
+body, html {
+  width: 100%;
+  height: 100%;
+  font-family: proxima nova,open sans,sans-serif;
+  margin: 0;
+}
+
+a {
+  text-decoration: none;
+}
+
+.body-background{
+  background-color: rgba(48,48,56,.7); 
+  transition: visibility 0s linear 0s,background-color .4s ease 0s; 
+  -webkit-transition: visibility 0s linear 0s,background-color .4s ease 0s;
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  overflow-x: hidden;
+}
+
+.payment-wrap::before {
+  height: 10vh;
+  content: "";
+  display: block;
+  width: 100%;
+}
+
+.payment-wrap {
+  position: relative;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: auto;
+}
+
+.payment-box-wrap {
+  margin: 0 auto;
+  width: 100%;
+  box-shadow: 0 19px 38px rgba(0,0,0,.3),0 15px 12px rgba(0,0,0,.1);
+  max-width: 400px;
+}
+.payment-box {
+  background-color: #EFEFEF;
+  border-radius: 5px;
+  overflow: hidden;
+
+}
+.payment-box-header {
+  border-bottom: 4px solid #0460bb;
+  height: 66px;
+  text-align: center;
+}
+.payment-box-header-image-wrap {
+  line-height: 66px;
+  display: inline-block;
+}
+.payment-box-header-image-wrap img {
+  vertical-align: middle;
+  margin-left: 5px;
+  width: 200px;
+  height: 38px;
+}
+
+.payment-box-header-exit {
+  line-height: 66px;
+  display: inline-block;
+  position: relative;
+  right: 10px;
+  float: right;
+}
+.payment-box-header-exit #header-close-button {
+  vertical-align: middle;
+}
+
+#header-close-button i {
+  color: black;
+}
+
+.payment-box-content-qrcode {
+  text-align: center;
+}
+
+#address-copy-button {
+  color: black;
+}
+
+.payment-box-content {
+  text-align: center;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  min-height: 250px;
+}
+
+.payment-box-footer {
+  border-top: 4px solid #0460bb;
+  padding-top: 10px;
+  margin-bottom: 10px;
+  text-align: center;
+  min-height: 30px;
+}
+
+.mybtn {
+  display: inline-block;
+  text-align: center;
+  vertical-align: middle;
+  border: 1px solid transparent;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  padding: .375rem .75rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  border-radius: .25rem;
+  transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+  
+
+}
+
+.mybtn:not(:disabled):not(.disabled) {
+  cursor: pointer;
+}
+
+.mybtnMain {
+  background-color: #4072F8;
+  border-color: #4072F8;
+  color: white;
+}
+
+.mybtnMain.focus, .mybtnMain:focus {
+  box-shadow: 0 0 0 .2rem rgba(0,123,255,.5);
+}
+
+.topBottomMargin {
+  margin-bottom: 10px; margin-top: 10px;
+}
+#openInWalet i {
+  font-size: 0.7rem;
+  vertical-align: middle;
+  padding-bottom: 3px;
+}
+
+.paymentMethod {
+  margin-bottom: 20px;
+}
+.paymentMethod span {
+  vertical-align: middle;
+  padding-top: 15px;
+}
+
+.paymentMethodLogo {
+  vertical-align: middle;
+  height: 30px;
+  
+}
+
+#payAmount-value-crypto {
+  font-size: 2rem;
+}
+.footer-text {
+  font-size: 80%;
+}
+.text-muted {
+  color: #6c757d !important
+}
+
+.address-wrap {
+  margin-bottom: 10px;
+  margin-top: 5px;
+}
+
+.test-banner {
+  background-color: red;
+  margin-bottom: -10px;
+}
+
+.payment-success-wrap, .payment-error-wrap {
+  margin-top: 30px;
+}
+
+.payment-success-wrap i {
+  color: green;
+}
+.payment-error-wrap i {
+  color: red;
+}

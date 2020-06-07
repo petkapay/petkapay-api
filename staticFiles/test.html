@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Payment</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico"/>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.js"></script>
+    <script src="petkaPay.js"></script>
+  </head>
+  <body>
+    <div style="text-align: center">
+      <h1>Hello</h1>
+
+
+      <a href="javascript:void(0)" id="startPayment">Pay 20 EUR</a>
+
+      <div id="paid" style="display: none;">
+        <div>Success! Payment received.</div>
+        <div class="payment-success-wrap">
+          <i class="fas fa-check-circle fa-5x"></i>
+        </div>
+      </div>
+    </div>
+
+
+    <script>
+      var merchantId = "test";
+      
+      $("#startPayment").click(function (e) {
+        e.preventDefault();
+        var params = {
+          merchantId: merchantId,
+          refNumber: "test",
+          amount: 2000,
+          currency: "EUR",
+          signature: "test",
+          payCurrency: "BTC"
+        };
+        function onSuccess() {
+          $("#paid").show();
+        }
+        $("#paid").hide();
+        PetkaPay.pay({params: params, onSuccess: onSuccess});
+      });
+    </script>
+
+  </body>
+</html>

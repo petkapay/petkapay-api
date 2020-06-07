@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Payment</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.js"></script>
+    <script src="jquery-qrcode-0.17.0.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.2/css/all.min.css">
+    
+    <link rel="stylesheet" href="paymentFrame.css" >
+
+  </head>
+  <body>
+
+    <div class="body-background">
+      <div class="payment-wrap">
+        <div class="payment-box-wrap">
+          <div class="payment-box">
+            <div class="payment-box-header">
+              <div class="payment-box-header-image-wrap"><img src="petkaPayLogoImageAndName3.svg" alt="" ></div>
+              <div class="payment-box-header-exit">
+                <a href="javascript:void(0)" id="header-close-button">
+                  <i class="far fa-times-circle fa-lg"></i>
+                </a>
+              </div>
+            </div>
+            <div class="payment-box-content">
+              <div class="payment-box-content-spinner">
+                <img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+PHN2ZyB4bWxuczpzdmc9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB2ZXJzaW9uPSIxLjAiIHdpZHRoPSI4MHB4IiBoZWlnaHQ9IjgwcHgiIHZpZXdCb3g9IjAgMCAxMjggMTI4IiB4bWw6c3BhY2U9InByZXNlcnZlIj48Zz48bGluZWFyR3JhZGllbnQgaWQ9ImxpbmVhci1ncmFkaWVudCI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2ZmZiIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzAwMCIvPjwvbGluZWFyR3JhZGllbnQ+PHBhdGggZD0iTTYzLjg1IDBBNjMuODUgNjMuODUgMCAxIDEgMCA2My44NSA2My44NSA2My44NSAwIDAgMSA2My44NSAwem0uNjUgMTkuNWE0NCA0NCAwIDEgMS00NCA0NCA0NCA0NCAwIDAgMSA0NC00NHoiIGZpbGw9InVybCgjbGluZWFyLWdyYWRpZW50KSIgZmlsbC1ydWxlPSJldmVub2RkIi8+PGFuaW1hdGVUcmFuc2Zvcm0gYXR0cmlidXRlTmFtZT0idHJhbnNmb3JtIiB0eXBlPSJyb3RhdGUiIGZyb209IjAgNjQgNjQiIHRvPSIzNjAgNjQgNjQiIGR1cj0iMTkyMG1zIiByZXBlYXRDb3VudD0iaW5kZWZpbml0ZSI+PC9hbmltYXRlVHJhbnNmb3JtPjwvZz48L3N2Zz4=" alt="" />
+              </div>
+              <div class="payment-box-content-paid" style="display: none;">
+                <div>Success! Payment received.</div>
+                <div class="payment-success-wrap">
+                  <i class="fas fa-check-circle fa-5x"></i>
+                </div>
+              </div>
+              <div class="payment-box-content-returned" style="display: none;">
+                <div>Canceled! Payment refunded.</div>
+                <div class="payment-error-wrap">
+                  <i class="fas fa-times-circle fa-5x"></i>
+                </div>
+              </div>
+              <div class="payment-box-content-canceled" style="display: none;">
+                <div>Canceled!</div>
+                <div class="payment-error-wrap">
+                  <i class="fas fa-times-circle fa-5x"></i>
+                </div>
+              </div>
+              <div class="payment-box-content-content" style="display: none;">
+                <div class="paymentMethod"><span>Pay</span> <span id="payAmount-value"></span> 
+                  <span>with</span>
+                  <img src="BTC_Logo.png" alt="" class="paymentMethodLogo" ></div>
+                <div>
+                  <span>Send</span> <br><span id="payAmount-value-crypto"></span> <br>to
+
+                </div>
+                <div class="address-wrap">
+                  <div>
+                    <span id="address"></span>
+                    <a id="address-copy-button" href="javascript:void(0)">
+                      <i class="fas fa-copy"></i>
+                    </a>
+                  </div>
+                  <div id="addressCopiedText"></div>
+                </div>
+
+
+                <div class="payment-box-content-qrcode">
+                  <div id="qrCode"></div>
+                </div>
+
+
+                <div class="topBottomMargin"> 
+                  <a id="openInWalet" class="mybtn mybtnMain" href="javascript:void(0)">
+                    <span>Open in wallet <i class="fas fa-external-link-alt "></i></span>
+                  </a>
+                </div>
+
+                <div class="test-banner" style="display: none;">Test</div>
+              </div>
+
+            </div>
+            <div class="payment-box-footer">
+              <div>
+                <span class="footer-text text-muted"><i class="fas fa-lock"></i> Secure payment by</span>
+              </div>
+              <div><img src="petkaPayLogoImageAndName3.svg" alt="" style="width: 200px; height: 38px;" ></div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript">
+      /*<![CDATA[*/
+      var config = {"api": "%gatewayAPI%", "version": "1.0", "maxPaymentTime": 900000};
+
+      var mData = "";
+      var paymentNumber;
+      var paymentReceived = false;
+      var paymentCanceled = false;
+      var cancelUrl;
+      var successUrl;
+      var startTime = new Date().getTime();
+
+      jQuery(function ($) {
+        
+        paymentNumber = getUrlParameter('paymentNumber');
+        if (paymentNumber !== null && paymentNumber !== undefined && paymentNumber !== "") {
+          jQuery.get(config.api + "/payment/getDetails?paymentNumber=" + paymentNumber, function (data) {
+            mData = data;
+
+            jQuery(".payment-box-content-spinner").hide();
+            jQuery(".payment-box-content-content").show();
+            jQuery("#payAmount-value").text(data.amountFormatted);
+            jQuery("#payAmount-value-crypto").text(data.payAmountFormatted);
+            jQuery("#address").text(data.publicKey);
+            jQuery("#qrCode").qrcode({
+              text: "bitcoin:" + data.publicKey + "?amount=" + data.payAmountDecimal
+            });
+            publicKey = data.publicKey;
+            successUrl = data.successUrl;
+            cancelUrl = data.cancelUrl;
+
+            if (data.test) {
+              jQuery(".test-banner").show();
+            }
+
+            setTimeout(checkForPayment, 10000);
+          });
+        }
+
+
+        jQuery("#openInWalet").click(function (e) {
+          e.preventDefault();
+          var url = "bitcoin:" + mData.publicKey + "?amount=" + mData.payAmountDecimal;
+          window.open(url, '_blank');
+        });
+
+        jQuery("#address-copy-button").click(function () {
+          copyText();
+        });
+
+        jQuery("#header-close-button").click(function () {
+          if (self !== top) {
+            // you're in an iframe
+            parent.postMessage("close", "*");
+          } else if (paymentReceived && successUrl) {
+            window.location.href = successUrl;
+          } else if (cancelUrl) {
+            window.location.href = cancelUrl;
+          }
+        });
+
+      });
+
+      function processPaid() {
+        paymentReceived = true;
+        jQuery(".payment-box-content-content").hide();
+        jQuery(".payment-box-content-paid").show();
+
+        setTimeout(() => {
+          if (self !== top) {
+            // you're in an iframe
+            parent.postMessage("paid", "*");
+          } else if (successUrl) {
+            window.location.href = successUrl;
+          }
+
+        }, 5000);
+      }
+      
+      function processCancel() {
+        paymentCanceled = true;
+        jQuery(".payment-box-content-content").hide();
+        jQuery(".payment-box-content-canceled").show();
+        
+         setTimeout(() => {
+          if (self !== top) {
+            // you're in an iframe
+            parent.postMessage("cancel", "*");
+          } else if (cancelUrl) {
+            window.location.href = cancelUrl;
+          }
+
+        }, 5000);
+      }
+      
+      function processReturn() {
+        paymentCanceled = true;
+        jQuery(".payment-box-content-content").hide();
+        jQuery(".payment-box-content-returned").show();
+        
+         setTimeout(() => {
+          if (self !== top) {
+            // you're in an iframe
+            parent.postMessage("cancel", "*");
+          } else if (cancelUrl) {
+            window.location.href = cancelUrl;
+          }
+
+        }, 5000);
+      }
+
+      function checkForPayment() {
+        if (paymentNumber !== null && paymentNumber !== undefined && paymentNumber !== "") {
+          jQuery.ajax({
+            url: config.api + "/payment/getStatus?paymentNumber=" + paymentNumber,
+            dataType: 'json',
+            success: function (data) {
+              if (data.status == 'PAID') {
+                processPaid();
+              } else if (data.status == 'RETURNED') {
+                processReturn();
+              }
+            },
+            complete: function () {
+              // schedule the next request *only* when the current one is complete:
+              if (!paymentReceived && !paymentCanceled) {
+                if((startTime + config.maxPaymentTime) < new Date().getTime()) {
+                  //cancel payment
+                  processCancel();
+                } else {
+                  setTimeout(checkForPayment, 8000);
+                }
+              }
+            }
+          });
+        }
+      }
+      function getUrlParameter(sParam) {
+        var sPageURL = window.location.search.substring(1),
+                sURLVariables = sPageURL.split('&'),
+                sParameterName,
+                i;
+
+        for (i = 0; i < sURLVariables.length; i++) {
+          sParameterName = sURLVariables[i].split('=');
+
+          if (sParameterName[0] === sParam) {
+            return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+          }
+        }
+
+        return null;
+      }
+
+      function copyText() {
+        window.getSelection().removeAllRanges();
+        // Select the password text into a copyable range
+        var theRange = document.createRange();
+        theRange.selectNode(document.getElementById("address"));
+        window.getSelection().addRange(theRange);
+        try {
+          // Copy the selected range
+          document.execCommand('copy');
+          //alert("Password is copied.");
+          jQuery("#addressCopiedText").text("Address is copied.");
+        } catch (err) {
+        }
+      }
+      /*]]>*/
+    </script>
+  </body>
+</html>

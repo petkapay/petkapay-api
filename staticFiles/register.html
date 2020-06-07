@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Payment</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico"/>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.js"></script>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+
+    <style>
+      .payment-box-header {
+        border-bottom: 4px solid #0460bb;
+        height: 66px;
+        text-align: center;
+      }
+      .payment-box-header-image-wrap {
+        line-height: 66px;
+        display: inline-block;
+      }
+      .payment-box-header-image-wrap img {
+        vertical-align: middle;
+        margin-left: 5px;
+        width: 200px;
+        height: 38px;
+      }
+      .payment-box-content {
+        margin-top: 10px;
+        margin-bottom: 10px;
+        min-height: 250px;
+      }
+      #registerResult {
+        margin-top: 20px;
+      }
+      .lab {
+        white-space: nowrap;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="body-background">
+      <div class="payment-wrap">
+        <div class="payment-box-wrap">
+          <div class="payment-box">
+            <div class="payment-box-header">
+              <div class="payment-box-header-image-wrap"><img src="petkaPayLogoImageAndName3.svg" alt="" ></div>
+            </div>
+            <div class="payment-box-content">
+              <div class="payment-box-content-content">
+                <div class="col-xl-4 offset-xl-4">
+
+                  <h2>Create new merchant</h2>
+
+                  <form id="registerForm">
+                    <div class="form-group">
+                      <label for="btcAddress">Bitcoin wallet address</label>
+                      <input type="text" class="form-control" id="btcAddress" name="btcAddress" aria-describedby="btcAddressHelp">
+                      <small id="btcAddressHelp" class="form-text text-muted">Your Bitcoin public key. You will receive payments to this address.</small>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Register</button>
+                  </form>
+
+                  <div id="registerResult" style="display: none;">
+                    <h3>Success!</h3>
+                    <table id="resultTable" class="table">
+                    </table>
+
+                  </div>
+                </div>
+
+
+
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <script>
+      //var config = {"api": "%gatewayAPI%", "version": "1.0"};
+      var config = {"api": "https://api.petkapay.com/dev", "version": "1.0"};
+
+      $('#registerForm').on('submit', function () {
+        var dataArray = $(this).serializeArray();
+        var dataObj = {};
+        $.each(dataArray,
+                function (i, v) {
+                  dataObj[v.name] = v.value;
+                });
+        console.log(dataObj);
+        console.log(JSON.stringify(dataObj));
+        $.post(config.api + "/merchant/create", JSON.stringify(dataObj), function (data) {
+          console.log(data)
+            var resultTable = $('#resultTable');
+            
+            var tr = $('<tr>');
+            tr.append($('<td>').addClass("lab").text("Merchant ID"));
+            tr.append($('<td>').addClass("val").text(data.id));
+            resultTable.append(tr);
+            
+            var tr = $('<tr>');
+            tr.append($('<td>').addClass("lab").text("Test"));
+            tr.append($('<td>').addClass("val").text(data.test));
+            resultTable.append(tr);
+            
+            var tr = $('<tr>');
+            tr.append($('<td>').addClass("lab").text("BTC Address"));
+            tr.append($('<td>').addClass("val").text(data.btcAddress));
+            resultTable.append(tr);
+            
+            var tr = $('<tr>');
+            tr.append($('<td>').addClass("lab").text("Secret key"));
+            tr.append($('<td>').addClass("val").text(data.secretKey));
+            resultTable.append(tr);
+            
+            var tr = $('<tr>');
+            tr.append($('<td>').addClass("lab").text("Reference number"));
+            tr.append($('<td>').addClass("val").text(data.refNumber));
+            resultTable.append(tr);
+
+          $('#registerResult').show();
+        }, 'json');
+        return false;
+      });
+    </script>
+
+  </body>
+</html>

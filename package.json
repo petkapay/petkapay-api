@@ -1,0 +1,16 @@
+{
+  "name": "PetkaPayAPI",
+  "version": "1.0.0",
+  "keywords": [],
+  "author": "baso10",
+  "contributors": [],
+  "dependencies": {
+    "bitcoinjs-lib": "^5.1.10",
+    "got": "^11.3.0",
+    "uuid": "*"
+  },
+  "devDependencies": {
+    "aws-sdk": "^2.693.0",
+    "serverless-secrets-plugin": "^0.1.0"
+  }
+}
