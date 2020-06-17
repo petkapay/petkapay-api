@@ -4,8 +4,9 @@ const blockcypherToken = process.env.BLOCKCYPHER_TOKEN;
 const got = require('got');
 const util = require('./util');
 
-async function findTrx(trxHash, options = {}) {
-  var url = "https://api.blockcypher.com/v1/" + "btc" + "/" + "test3" + "/txs/" + trxHash + "?limit=1&token=" + blockcypherToken;
+async function findTrx(trxHash, test = 0) {
+  let network = getNetwork(test);
+  var url = "https://api.blockcypher.com/v1/" + "btc" + "/" + network + "/txs/" + trxHash + "?limit=1&token=" + blockcypherToken;
   console.log("url: " + url);
   let data = await got(url).json();
   console.log("findTrx: " + (data ? JSON.stringify(data) : ""));
@@ -21,9 +22,10 @@ async function findTrx(trxHash, options = {}) {
   return data && data.error ? null : data;
 }
 
-async function getBalance(paymentModel) {
+async function getBalance(publicKey, test = 0) {
   var minConfirmations = 0;
-  var url = "https://api.blockcypher.com/v1/" + "btc" + "/" + "test3" + "/addrs/" + paymentModel.publicKey + "?confirmations=" + minConfirmations + "&limit=1&token=" + blockcypherToken;
+  let network = getNetwork(test);
+  var url = "https://api.blockcypher.com/v1/" + "btc" + "/" + network + "/addrs/" + publicKey + "?confirmations=" + minConfirmations + "&limit=1&token=" + blockcypherToken;
   console.log("url: " + url);
   let data = await got(url).json();
   console.log("getBalance: " + (data ? JSON.stringify(data) : ""));
@@ -39,9 +41,10 @@ async function getBalance(paymentModel) {
   return data && data.error ? null : data;
 }
 
-async function getUnspentOutputs(paymentModel) {
+async function getUnspentOutputs(publicKey, test = 0) {
   var minConfirmations = 0;
-  var url = "https://api.blockcypher.com/v1/" + "btc" + "/" + "test3" + "/addrs/" + paymentModel.publicKey + "?confirmations=" + minConfirmations + "&unspentOnly=true&token=" + blockcypherToken;
+  let network = getNetwork(test);
+  var url = "https://api.blockcypher.com/v1/" + "btc" + "/" + network + "/addrs/" + publicKey + "?confirmations=" + minConfirmations + "&unspentOnly=true&token=" + blockcypherToken;
 
   console.log("url: " + url);
   let data = await got(url).json();
@@ -58,8 +61,9 @@ async function getUnspentOutputs(paymentModel) {
   return data && data.error ? null : data;
 }
 
-async function pushTrx(rawHash) {
-  var url = "https://api.blockcypher.com/v1/" + "btc" + "/" + "test3" + "/txs/push?token=" + blockcypherToken;
+async function pushTrx(rawHash, test = 0) {
+  let network = getNetwork(test);
+  var url = "https://api.blockcypher.com/v1/" + "btc" + "/" + network + "/txs/push?token=" + blockcypherToken;
   console.log("url: " + url);
   let data = await got.post(url, {json: {tx: rawHash}}).json();
   console.log("pushResponse: " + (data ? JSON.stringify(data) : ""));
@@ -106,6 +110,17 @@ async function getFeePerByte() {
   console.log(JSON.stringify(feeObj));
 
   return feePerByte;
+}
+
+function getNetwork(isTest) {
+  let network = "main";
+  if(isTest == 1) {
+    network = "test3";
+  } else {
+    //TODO
+  }
+  
+  return network;
 }
 
 module.exports = {

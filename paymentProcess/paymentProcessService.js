@@ -2,7 +2,7 @@
 const paymentDb = require("../db/payment");
 const paymentProcessDb = require("../db/paymentProcess");
 const merchantDb = require("../db/merchant");
-const blockchain = require("../services/blockchain");
+const blockchainWeb = require("../services/blockchainWeb");
 const merchantNotification = require("../services/merchantNotification");
 const bitcoinSignTrxService = require("../btc/bitcoinSignTrxService");
 
@@ -48,7 +48,7 @@ async function processSingle(paymentModel) {
     if (paymentModel.status === "FORWARDED") {
       //forwarded. Find trx and if more than 6 confirmations, inform merchant
 
-      const trxOnNetwork = await blockchain.findTrx(paymentModel.forwardHash);
+      const trxOnNetwork = await blockchainWeb.findTrx(paymentModel.forwardHash, paymentModel.test);
       if (trxOnNetwork && trxOnNetwork.confirmations >= paymentModel.minConfirmations) {
         //payment is done
         //notify merchant
@@ -73,7 +73,7 @@ async function processSingle(paymentModel) {
       return true;
     }
 
-    const data = await blockchain.getBalance(paymentModel);
+    const data = await blockchainWeb.getBalance(paymentModel.publicKey, paymentModel.test);
     if (!data) {
       return false;
     }
@@ -105,7 +105,7 @@ async function processSingle(paymentModel) {
 
       } else {
         if (paymentModel.payAmount === balance) {
-          let lastTxHash = blockchain.getLastTxHash(data);
+          let lastTxHash = blockchainWeb.getLastTxHash(data);
 
           console.log("Mark PAID :" + paymentModel.id);
           //mark paid
@@ -127,9 +127,9 @@ async function processSingle(paymentModel) {
         } else {
           //return payment
           console.log("Balance too high or low");
-          let lastTxHash = blockchain.getLastTxHash(data);
+          let lastTxHash = blockchainWeb.getLastTxHash(data);
 
-          let findTrx = await blockchain.findTrx(lastTxHash);
+          let findTrx = await blockchainWeb.findTrx(lastTxHash, paymentModel.test);
           if (findTrx) {
             console.log(JSON.stringify(findTrx));
             if (findTrx.inputs && findTrx.inputs.length > 0) {
@@ -190,13 +190,13 @@ async function processSingle(paymentModel) {
 
 async function forwardPayment(paymentModel, toAddress) {
 
-  const data = await blockchain.getUnspentOutputs(paymentModel);
+  const data = await blockchainWeb.getUnspentOutputs(paymentModel.publicKey, paymentModel.test);
   if (!data) {
     return;
   }
 
   var outputs = [];
-  var txRef = blockchain.getTxRef(data);
+  var txRef = blockchainWeb.getTxRef(data);
   if (txRef && txRef.length > 0)
   {
     for (const tx of txRef)
@@ -214,7 +214,7 @@ async function forwardPayment(paymentModel, toAddress) {
   }
 
   //fee
-  const feePerByte = await blockchain.getFeePerByte();
+  const feePerByte = await blockchainWeb.getFeePerByte();
 
   var trxInputs = [];
   var totalAmount = 0;
@@ -224,7 +224,7 @@ async function forwardPayment(paymentModel, toAddress) {
       txHash: output.txHash,
       txIndex: output.txIndex,
       amount: output.amount,
-      publicKey: paymentModel.publicKey
+      publicKey: paymentModel.publicKey,
     });
     totalAmount += output.amount;
   }
@@ -244,7 +244,7 @@ async function forwardPayment(paymentModel, toAddress) {
   console.log(signResult);
 
   //push trx
-  const pushResponse = await blockchain.pushTrx(signResult.rawHash);
+  const pushResponse = await blockchainWeb.pushTrx(signResult.rawHash, paymentModel.test);
 
   return {pushResponse: pushResponse, tx: signResult};
 }
