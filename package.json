@@ -10,7 +10,7 @@
     "uuid": "*"
   },
   "devDependencies": {
-    "aws-sdk": "^2.693.0",
+    "aws-sdk": "^2.814.0",
     "serverless-secrets-plugin": "^0.1.0"
   }
 }
